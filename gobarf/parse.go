@@ -8,9 +8,10 @@ import (
 var (
 	errorBadPath             = errors.New("Unable to parse provided path.")
 	errorUnsupportedProtocol = errors.New("Unsupported filesystem.")
+	errorNoBucket            = errors.New("No bucket specified.")
 )
 
-func parsePath(srcPath string) (string, string, error) {
+func parseSrc(srcPath string) (string, string, error) {
 	// first check if empty
 	if srcPath == "" {
 		return "", "", errorBadPath
@@ -33,5 +34,21 @@ func parsePath(srcPath string) (string, string, error) {
 	} else {
 		return "", "", errorBadPath
 	}
+}
+
+func parseBucket(bucketPath string) (string, string, error) {
+	if bucketPath == "" {
+		return "", "", errorBadPath
+	}
+	parts := strings.Split(bucketPath, "/")
+	if parts[0] == "" {
+		return "", "", errorNoBucket
+	}
+	// return prefix if we have it
+	if len(parts) > 1 {
+		return parts[0], strings.Join(parts[1:], "/"), nil
+	}
+
+	return parts[0], "", nil
 
 }
