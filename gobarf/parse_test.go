@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestParseEmptyPath(t *testing.T) {
+func TestParseSrcEmptyPath(t *testing.T) {
 	assert := assert.New(t)
 
 	url := ""
@@ -16,7 +16,7 @@ func TestParseEmptyPath(t *testing.T) {
 	assert.Equal(errorBadPath, err)
 }
 
-func TestParseFSPath(t *testing.T) {
+func TestParseSrcFSPath(t *testing.T) {
 	assert := assert.New(t)
 
 	url := "fs://yoyoyo/asd"
@@ -27,7 +27,7 @@ func TestParseFSPath(t *testing.T) {
 	assert.Equal(path, "yoyoyo/asd")
 }
 
-func TestParseS3Path(t *testing.T) {
+func TestParseSrcS3Path(t *testing.T) {
 	assert := assert.New(t)
 
 	url := "s3://yoyoyo/asd"
@@ -38,7 +38,7 @@ func TestParseS3Path(t *testing.T) {
 	assert.Equal(path, "yoyoyo/asd")
 }
 
-func TestParseDefaultPath(t *testing.T) {
+func TestParseSrcDefaultPath(t *testing.T) {
 	assert := assert.New(t)
 
 	url := "yoyoyo/asd"
@@ -49,7 +49,7 @@ func TestParseDefaultPath(t *testing.T) {
 	assert.Equal(path, "yoyoyo/asd")
 }
 
-func TestParseUnssuportedSource(t *testing.T) {
+func TestParseSrcUnssuportedSource(t *testing.T) {
 	assert := assert.New(t)
 
 	url := "hdfs://yoyoyo/asd"
@@ -60,7 +60,7 @@ func TestParseUnssuportedSource(t *testing.T) {
 
 }
 
-func TestParseCrazyPath(t *testing.T) {
+func TestParseSrcCrazyPath(t *testing.T) {
 	assert := assert.New(t)
 
 	url := "s3://yoyoyo/asds3://foo"
@@ -69,4 +69,44 @@ func TestParseCrazyPath(t *testing.T) {
 	assert.Error(err)
 	assert.Equal(errorBadPath, err)
 
+}
+
+func TestParseBucket(t *testing.T) {
+	assert := assert.New(t)
+
+	path := "yoyoyo"
+	bucket, prefix, err := parseBucket(path)
+
+	assert.NoError(err)
+	assert.Equal(path, bucket)
+	assert.Equal(prefix, "")
+
+}
+
+func TestParseBucketPrefix(t *testing.T) {
+	assert := assert.New(t)
+
+	path := "mybucket/x"
+	bucket, prefix, err := parseBucket(path)
+
+	assert.NoError(err)
+	assert.Equal("mybucket", bucket)
+	assert.Equal(prefix, "x")
+
+}
+
+func TestParseBucketError(t *testing.T) {
+	assert := assert.New(t)
+
+	path := ""
+	_, _, err := parseBucket(path)
+
+	assert.Error(err)
+	assert.Equal(errorNoBucket, err)
+
+	path = "/"
+	_, _, err = parseBucket(path)
+
+	assert.Error(err)
+	assert.Equal(errorNoBucket, err)
 }

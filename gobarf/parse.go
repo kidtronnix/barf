@@ -38,7 +38,7 @@ func parseSrc(srcPath string) (string, string, error) {
 
 func parseBucket(bucketPath string) (string, string, error) {
 	if bucketPath == "" {
-		return "", "", errorBadPath
+		return "", "", errorNoBucket
 	}
 	parts := strings.Split(bucketPath, "/")
 	if parts[0] == "" {
