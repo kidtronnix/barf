@@ -1,39 +1,37 @@
 # barf
 
-`barf` is a tool for producing a data streams from S3.
+Barf is a tool for producing a data streams from S3.
 
+Any files in your s3  that end with `.gz` will be automatically gzip decompressed.
 
 ## cli usage
 
 barf can be used a command line tool that will write all data to stdout.
 
-### basic example:
+### basic
 
 ```sh
-$ barf -src="s3://myawsbucket/prefix/to/my_files"
+$ barf s3://myawsbucket/prefix/to/my_files
 ```
 
 this will print the contents of all the files found in your `myawsbucket`
 with the prefix `prefix/to/my_files` to stdout.
 
-### advanced example:
+### advanced
 
 ```sh
-$ barf -src="s3://myawsbucket/prefix/to/my_files" -flow="1.0" -duration="3s" > output
+$ barf s3://myawsbucket/prefix/to/my_files -flow="1.0" -duration="3s" > output
 ```
 
 in this example we set a value for `flow` which controls the rate of http calls / sec.
 we also set a `duration` to get a small amount of data.
 
-## automatic gzip decompression
 
-Any files that end with `.gz` will be automatically gzip decompressed.
+## golang library
 
-## golang usage
+It is possible to use the underlying golang library in your own projects.
 
-It is possible to use the underlying golan libary in your own projects.
-
-### basic example:
+### example:
 
 ```go
 package main
