@@ -2,7 +2,7 @@
 
 Barf is a tool for producing a data streams from S3.
 
-Any files in your s3  that end with `.gz` will be automatically gzip decompressed.
+Any files in your s3 bucket that end with `.gz` will be automatically gzip decompressed.
 
 ## cli usage
 
