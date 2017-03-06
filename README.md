@@ -47,15 +47,14 @@ import (
 
 
 func main() {
-
-  // setup new stream of data
+	// setup new stream of data
 	b := barf.New(barf.Stream{
 		Src:      "s3://myawsbucket/prefix/to/my_files",
 	})
 	defer b.Close()
 
 	// read stream and print stdout
-  for l := range b.Barf() {
+  	for l := range b.Barf() {
 		fmt.Println(string(l))
 	}
 }
