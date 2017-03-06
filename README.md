@@ -54,8 +54,8 @@ func main() {
 	defer b.Close()
 
 	// read stream and print stdout
-  	for l := range b.Barf() {
-		fmt.Println(string(l))
+  	for line := range b.Barf() {
+		// do something with the line of content
 	}
 }
 ```
