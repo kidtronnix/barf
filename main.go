@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/seedboxtech/barf/gobarf"
+	"github.com/smaxwellstewart/barf/gobarf"
 )
 
 var (

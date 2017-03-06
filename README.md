@@ -3,8 +3,6 @@
 `barf` is a tool for producing a data streams from S3.
 
 
-
-
 ## cli usage
 
 barf can be used a command line tool that will write all data to stdout.
@@ -21,11 +19,11 @@ with the prefix `prefix/to/my_files` to stdout.
 ### advanced example:
 
 ```sh
-$ barf -src="s3://myawsbucket/prefix/to/my_files" -flow="" > output
+$ barf -src="s3://myawsbucket/prefix/to/my_files" -flow="1.0" -duration="3s" > output
 ```
 
-in this example we set a value for `flow` which controls the rate of httpcalls / sec.
-we also set
+in this example we set a value for `flow` which controls the rate of http calls / sec.
+we also set a `duration` to get a small amount of data.
 
 ## automatic gzip decompression
 
@@ -52,16 +50,14 @@ import (
 
 func main() {
 
+  // setup new stream of data
 	b := barf.New(barf.Stream{
 		Src:      "s3://myawsbucket/prefix/to/my_files",
 	})
 	defer b.Close()
 
-	// get stream of results
-	strm := b.Barf()
-
 	// read stream and print stdout
-  for l := range strm {
+  for l := range b.Barf() {
 		fmt.Println(string(l))
 	}
 }
