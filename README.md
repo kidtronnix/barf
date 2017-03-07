@@ -11,8 +11,27 @@ automatically decompressed using gzip or bzip2 algorithms respectively.
 
 ### Install
 
-Please visit the [releases](https://github.com/smaxwellstewart/barf/releases)
-page of the barf github project. Download the binary appropriate for your system binary.
+The binaries for mac, windows and linux are hosted[releases](https://github.com/smaxwellstewart/barf/releases)
+page of the barf github project.
+
+#### OSX / Linux
+
+```sh
+# download for OSX 
+curl https://github.com/smaxwellstewart/barf/releases/download/v0.1/barf_osx -o barf
+# or, download for Linux 
+curl https://github.com/smaxwellstewart/barf/releases/download/v0.1/barf_linux -o barf
+# make executable
+chmod +x barf
+# move to some directory on your path, example:
+sudo mv barf /usr/local/bin
+```
+
+#### Windows
+
+```bash
+# Method not implemented yet.
+```
 
 ### Usage
 
