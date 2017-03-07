@@ -40,7 +40,7 @@ Think of this as a recursive `cat` command for all files
 in your S3 bucket under a certain prefix.
 
 ```sh
-$ barf s3://myawsbucket/prefix/to/my_stuff_
+$ barf s3://bucket/prefix/
 # prepare for the data vom!
 ```
 
@@ -50,7 +50,7 @@ by opening up our stream for a limited time.
 Finally we pipe everything to some output file for safe keeping.
 
 ```sh
-$ barf -flow="10.0" -duration="3s" s3://myawsbucket/prefix/to/my_stuff_ > output
+$ barf -flow="10.0" -duration="3s" s3://bucket/prefix/ > output
 ```
 
 
