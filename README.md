@@ -30,6 +30,7 @@ sudo mv barf /usr/local/bin
 #### Windows
 
 ```bash
+# Binary available: https://github.com/smaxwellstewart/barf/releases/download/v0.1/barf.exe
 # Method not implemented yet.
 ```
 
