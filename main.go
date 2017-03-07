@@ -4,19 +4,18 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"sync"
 	"time"
 
 	"github.com/smaxwellstewart/barf/gobarf"
 )
 
 var (
-	flow     = flag.Float64("flow", barf.FlowDefault, "rate limit of data gathering process")
-	duration = flag.Duration("duration", 0, "rate limit of data gathering process")
+	flow     = flag.Float64("flow", barf.DefaultFlow, "rate limit of data gathering process")
+	duration = flag.Duration("duration", 0, "duration of stream. useful for taking samples. if zero or not set, stream will be endure until end of file content.")
 )
 
 func main() {
-
+	// parse flags from cli
 	flag.Parse()
 
 	// check we have supplied a src argument
@@ -33,36 +32,33 @@ func main() {
 	defer b.Close()
 	strm := b.Barf()
 
-	// start reading stream to stdout
-	var wg sync.WaitGroup
+	// make chan for communicating when the timer is done
 	done := make(chan struct{})
-	wg.Add(1)
+
+	// start the timer in the background
 	go func() {
-		defer wg.Done()
-		for l := range strm {
-			select {
-			case <-done:
-				return
-			default:
-				fmt.Println(string(l))
-			}
+		// did we set duration for stream?
+		if duration.Nanoseconds() != 0 {
+			quit := time.After(*duration)
+			<-quit
+			close(done) // close reading from strm!
 		}
 	}()
 
-	// did we set duration for stream?
-	if duration.Nanoseconds() != 0 {
-		quit := time.After(*duration)
-		<-quit
-		close(done) // quit reading early
+	// loop through results
+	for l := range strm {
+		select {
+		case <-done:
+			return
+		default:
+			fmt.Println(string(l))
+		}
 	}
-
-	// wait until we either forced to stop or end of datastream
-	wg.Wait()
 }
 
 func printUsage() {
 	fmt.Println("Usage:")
 	fmt.Println("$ barf s3://bucket/prefix/to/files")
-	fmt.Println("Config flags:")
+	fmt.Println("  (options)")
 	flag.PrintDefaults()
 }

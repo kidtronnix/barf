@@ -10,16 +10,21 @@ import (
 )
 
 var (
-	FlowDefault     = 1.0
+	// DefaultFlow is the default rate limit at which we can make AWS S3 API calls.
+	// It is set to a conservative value for most modern hardware.
+	DefaultFlow = 1.0
+	// DefaultS3Region is the default AWS region for making AWS S3 API calls.
+	// For more info, http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html
 	DefaultS3Region = aws.USEast
+	// DefaultWokers is the default number of concurrent wokers for reading s3 files.
+	// By default it is set to the num of available cpus - 1
+	DefaultWorkers = runtime.NumCPU() - 1
 )
 
 type Barfer interface {
 	Barf() <-chan []byte
 	Close()
 }
-
-//
 
 func New(strm Stream) Barfer {
 	src, path, err := parseSrc(strm.Src)
@@ -38,18 +43,19 @@ func New(strm Stream) Barfer {
 		if err != nil {
 			panic(err)
 		}
-		// trust me you want a limit!
-		if strm.Flow == 0.0 {
-			strm.Flow = FlowDefault
-		}
 
-		// create a rate limiter for ourselves
-		rl := limiter.New(0, strm.Flow)
+		// apply defaults...
 
 		// set default region to
 		if strm.Region.Name == "" {
 			strm.Region = DefaultS3Region
 		}
+
+		// trust me you want a rate limit!
+		if strm.Flow == 0.0 {
+			strm.Flow = DefaultFlow
+		}
+		rl := limiter.New(1, strm.Flow)
 
 		// connect to our s3 bucket
 		s := s3.New(auth, strm.Region)
@@ -66,7 +72,7 @@ func New(strm Stream) Barfer {
 				Bucket:  bucket,
 				Limiter: rl.Limiter(),
 			},
-			Readers:  runtime.NumCPU() - 1,
+			Readers:  DefaultWorkers,
 			doneChan: make(chan struct{}),
 		}
 	default:
@@ -107,7 +113,6 @@ func merge(done chan struct{}, chs ...<-chan []byte) chan []byte {
 	// copies values from c to out until c is closed, then calls wg.Done.
 	output := func(c <-chan []byte) {
 		defer wg.Done()
-
 		for n := range c {
 			select {
 			case out <- n:

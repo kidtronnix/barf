@@ -2,9 +2,9 @@ package barf
 
 import (
 	"bufio"
+	"compress/bzip2"
 	"compress/gzip"
 	"io"
-	"strings"
 )
 
 type s3bucketReader interface {
@@ -31,23 +31,26 @@ func (s *S3Reader) read(done chan struct{}, in chan string) chan []byte {
 				panic("error fetching s3 object: " + err.Error())
 			}
 
-			comp := parseCompression(key)
-
+			var r io.Reader
 			// decompress reader depending on setting
-			switch comp {
+			switch parseCompression(key) {
 			case "":
-				// no compression, do nothing
-			case "gzip":
-				rc, err = gzip.NewReader(rc)
+				r = rc
+			case "bz2":
+				r = bzip2.NewReader(rc)
 				if err != nil {
-					panic("error ungzipping s3 object: " + err.Error())
+					panic("error in bzip2 decompression: " + err.Error())
 				}
-				defer rc.Close()
+			case "gz":
+				r, err = gzip.NewReader(rc)
+				if err != nil {
+					panic("error in gzip decompression: " + err.Error())
+				}
 			default:
 				panic("unsupported compression")
 			}
 
-			scanner := bufio.NewScanner(rc)
+			scanner := bufio.NewScanner(r)
 			for scanner.Scan() {
 				select {
 				case out <- scanner.Bytes():
@@ -59,18 +62,10 @@ func (s *S3Reader) read(done chan struct{}, in chan string) chan []byte {
 			if err := scanner.Err(); err != nil {
 				panic("error scanning through file: " + err.Error())
 			}
+
+			rc.Close()
 		}
 	}()
 
 	return out
-}
-
-func parseCompression(key string) string {
-	comp := ""
-	// does key end in .gz?
-	i := strings.Index(key, ".gz")
-	if i == len(key)-len(".gz") {
-		comp = "gzip"
-	}
-	return comp
 }

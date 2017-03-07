@@ -1,39 +1,44 @@
 # barf
 
-Barf is a tool for producing data streams from files on S3.
+Barf is a data wrangling tool for producing data streams from an AWS S3 bucket.
 
-Any files in your S3 bucket that end with `.gz` will be automatically gzip decompressed.
+Every line of every file is sent through the stream.
 
-Each line from every file is sent through the stream.
+As a bonus, any files in your S3 bucket that end with `.gz` or `.bz2` will be
+automatically decompressed using gzip or bzip2 algorithms respectively.
 
-## cli usage
+## cli
 
-`barf` can be used a command line tool that will write all lines of data to stdout.
+### Install
 
-### basic
+Please visit the [releases](https://github.com/smaxwellstewart/barf/releases)
+page of the barf github project. Download the binary appropriate for your system binary.
 
-```sh
-$ barf s3://myawsbucket/prefix/to/my_files
-```
+### Usage
 
-This will print the contents of all the files found in your `myawsbucket`
-with the prefix `prefix/to/my_files` to stdout.
-
-### advanced
+Think of this as a recursive `cat` command for all files
+in your S3 bucket under a certain prefix.
 
 ```sh
-$ barf s3://myawsbucket/prefix/to/my_files -flow="1.0" -duration="3s" > output
+$ barf s3://myawsbucket/prefix/to/my_stuff_
+# prepare for the data vom!
 ```
 
-In this example we set a value for `flow` which controls the rate of http calls / sec.
-we also set a `duration` to get a small amount of data.
+In the more advanced example below, we set a value for `flow` which controls the
+rate of http calls / sec. We also set a `duration` to get a small amount of data
+by opening up our stream for a limited time.
+Finally we pipe everything to some output file for safe keeping.
+
+```sh
+$ barf -flow="10.0" -duration="3s" s3://myawsbucket/prefix/to/my_stuff_ > output
+```
 
 
-## golang library
+## go library
 
-It is possible to use the underlying golang library in your own projects.
+The other way of using barf is as golang library in your own projects.
 
-### example
+### Example
 
 ```go
 package main
@@ -56,7 +61,7 @@ func main() {
 	defer b.Close()
 
 	// read stream and print stdout
-  	for line := range b.Barf() {
+  for line := range b.Barf() {
 		// do something with the line of content
 	}
 }

@@ -52,3 +52,17 @@ func parseBucket(bucketPath string) (string, string, error) {
 	return parts[0], "", nil
 
 }
+
+// parses compression from s3 file keys
+func parseCompression(key string) string {
+	possible := []string{".gz", ".bz2"}
+	for _, ending := range possible {
+		// does key end in one of possible endings
+		i := strings.Index(key, ending)
+		if i == len(key)-len(ending) {
+			return strings.TrimPrefix(ending, ".") // return file ending but without "."
+		}
+	}
+	// no compression detected
+	return ""
+}

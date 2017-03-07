@@ -39,7 +39,7 @@ type S3Lister struct {
 }
 
 func (s *S3Lister) list(done chan struct{}) chan string {
-	output := make(chan string)
+	output := make(chan string, s.max)
 	delim := ""
 	// apply sensible default to max if not specified
 	if s.max == 0 {
