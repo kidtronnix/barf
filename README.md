@@ -2,7 +2,7 @@
 
 Barf is a data wrangling tool for producing data streams from an AWS S3 bucket.
 
-Every line of every file is sent through the stream.
+Every line of every file is sent through the stream until it closes.
 
 As a bonus, any files in your S3 bucket that end with `.gz` or `.bz2` will be
 automatically decompressed using gzip or bzip2 algorithms respectively.
@@ -11,8 +11,34 @@ automatically decompressed using gzip or bzip2 algorithms respectively.
 
 ### Install
 
-Please visit the [releases](https://github.com/smaxwellstewart/barf/releases)
-page of the barf github project. Download the binary appropriate for your system binary.
+The binaries for mac, windows and linux are hosted on the [releases](https://github.com/smaxwellstewart/barf/releases)
+page of the github project.
+
+#### OSX
+
+```sh
+curl https://github.com/smaxwellstewart/barf/releases/download/v0.1/barf_osx -o barf
+chmod +x barf
+# move to some directory on your `$PATH`, example:
+sudo mv barf /usr/local/bin
+```
+
+#### Linux
+
+```sh
+wget https://github.com/smaxwellstewart/barf/releases/download/v0.1/barf_linux
+mv barf_linux barf
+chmod +x barf
+# move to some directory on your `$PATH`, example:
+sudo mv barf /usr/local/bin/barf
+```
+
+#### Windows
+
+```bash
+# Binary available: https://github.com/smaxwellstewart/barf/releases/download/v0.1/barf.exe
+# Method not implemented yet.
+```
 
 ### Usage
 
@@ -20,7 +46,7 @@ Think of this as a recursive `cat` command for all files
 in your S3 bucket under a certain prefix.
 
 ```sh
-$ barf s3://myawsbucket/prefix/to/my_stuff_
+$ barf s3://bucket/prefix/
 # prepare for the data vom!
 ```
 
@@ -30,7 +56,7 @@ by opening up our stream for a limited time.
 Finally we pipe everything to some output file for safe keeping.
 
 ```sh
-$ barf -flow="10.0" -duration="3s" s3://myawsbucket/prefix/to/my_stuff_ > output
+$ barf -flow="10.0" -duration="3s" s3://bucket/prefix/ > output
 ```
 
 
