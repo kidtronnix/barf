@@ -16,8 +16,9 @@ type S3Reader struct {
 	Limiter <-chan struct{}
 }
 
-func (s *S3Reader) read(done chan struct{}, in chan string) chan []byte {
-	out := make(chan []byte)
+func (s *S3Reader) read(done chan struct{}, in chan string) chan string {
+	out := make(chan string)
+
 	go func() {
 		defer close(out)
 		for key := range in {
@@ -53,7 +54,7 @@ func (s *S3Reader) read(done chan struct{}, in chan string) chan []byte {
 			scanner := bufio.NewScanner(r)
 			for scanner.Scan() {
 				select {
-				case out <- scanner.Bytes():
+				case out <- scanner.Text():
 				case <-done:
 					return
 				}

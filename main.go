@@ -51,14 +51,16 @@ func main() {
 		case <-done:
 			return
 		default:
-			fmt.Println(string(l))
+			fmt.Println(l)
 		}
 	}
+
+	// fmt.Println(i)
+
 }
 
 func printUsage() {
-	fmt.Println("Usage:")
-	fmt.Println("$ barf s3://bucket/prefix/to/files")
-	fmt.Println("  (options)")
+	fmt.Println("Usage: barf [options] <s3://url>")
+	fmt.Println("\nOptions: ")
 	flag.PrintDefaults()
 }

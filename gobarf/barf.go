@@ -22,7 +22,7 @@ var (
 )
 
 type Barfer interface {
-	Barf() <-chan []byte
+	Barf() <-chan string
 	Close()
 }
 
@@ -88,12 +88,12 @@ type S3Barfer struct {
 	doneChan chan struct{}
 }
 
-func (b *S3Barfer) Barf() <-chan []byte {
+func (b *S3Barfer) Barf() <-chan string {
 	// start listing gopher!
 	listings := b.Lister.list(b.doneChan)
 
 	// start reading gophers
-	chans := make([]<-chan []byte, b.Readers)
+	chans := make([]<-chan string, b.Readers)
 	for i := 0; i < b.Readers; i++ {
 		chans[i] = b.Reader.read(b.doneChan, listings)
 	}
@@ -105,15 +105,18 @@ func (b *S3Barfer) Close() {
 	close(b.doneChan)
 }
 
-func merge(done chan struct{}, chs ...<-chan []byte) chan []byte {
+func merge(done chan struct{}, chs ...<-chan string) chan string {
 	var wg sync.WaitGroup
-	out := make(chan []byte)
+	out := make(chan string)
 
 	// Start an output goroutine for each input channel in cs.  output
 	// copies values from c to out until c is closed, then calls wg.Done.
-	output := func(c <-chan []byte) {
+	output := func(c <-chan string) {
 		defer wg.Done()
 		for n := range c {
+			// if bytes.Contains(n, []byte("7f190fa3-b3b6-40eb-8696-099c400f55c6")) {
+			// 	fmt.Printf("[merger] found imp: %v %s\n", len(n), n)
+			// }
 			select {
 			case out <- n:
 			case <-done:
