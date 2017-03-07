@@ -2,7 +2,7 @@
 
 Barf is a data wrangling tool for producing data streams from an AWS S3 bucket.
 
-Every line of every file is sent through the stream.
+Every line of every file is sent through the stream until it closes.
 
 As a bonus, any files in your S3 bucket that end with `.gz` or `.bz2` will be
 automatically decompressed using gzip or bzip2 algorithms respectively.
@@ -11,8 +11,8 @@ automatically decompressed using gzip or bzip2 algorithms respectively.
 
 ### Install
 
-The binaries for mac, windows and linux are hosted [releases](https://github.com/smaxwellstewart/barf/releases)
-page of the barf github project.
+The binaries for mac, windows and linux are hosted on the [releases](https://github.com/smaxwellstewart/barf/releases)
+page of the github project.
 
 #### OSX / Linux
 
