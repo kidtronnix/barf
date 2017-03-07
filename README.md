@@ -14,17 +14,23 @@ automatically decompressed using gzip or bzip2 algorithms respectively.
 The binaries for mac, windows and linux are hosted on the [releases](https://github.com/smaxwellstewart/barf/releases)
 page of the github project.
 
-#### OSX / Linux
+#### OSX
 
 ```sh
-# download for OSX 
 curl https://github.com/smaxwellstewart/barf/releases/download/v0.1/barf_osx -o barf
-# or, download for Linux 
-curl https://github.com/smaxwellstewart/barf/releases/download/v0.1/barf_linux -o barf
-# make executable
 chmod +x barf
-# move to some directory on your path, example:
+# move to some directory on your `$PATH`, example:
 sudo mv barf /usr/local/bin
+```
+
+#### Linux
+
+```sh
+wget https://github.com/smaxwellstewart/barf/releases/download/v0.1/barf_linux
+mv barf_linux barf
+chmod +x barf
+# move to some directory on your `$PATH`, example:
+sudo mv barf /usr/local/bin/barf
 ```
 
 #### Windows
