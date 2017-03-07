@@ -11,7 +11,7 @@ automatically decompressed using gzip or bzip2 algorithms respectively.
 
 ### Install
 
-The binaries for mac, windows and linux are hosted[releases](https://github.com/smaxwellstewart/barf/releases)
+The binaries for mac, windows and linux are hosted [releases](https://github.com/smaxwellstewart/barf/releases)
 page of the barf github project.
 
 #### OSX / Linux
