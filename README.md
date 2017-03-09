@@ -1,3 +1,4 @@
+<img src="https://raw.githubusercontent.com/smaxwellstewart/barf/master/logo.png" width="300" style="float:right;" />
 # barf
 
 Barf is a data wrangling tool for producing data streams from an AWS S3 bucket.
