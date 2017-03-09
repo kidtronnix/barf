@@ -1,44 +1,38 @@
-<img src="https://raw.githubusercontent.com/smaxwellstewart/barf/master/logo.png" width="300" style="float:right;" />
+<img alt="barf-logo" src="https://raw.githubusercontent.com/smaxwellstewart/barf/master/logo.png" width="200" align="right" />
+
 # barf
 
 Barf is a data wrangling tool for producing data streams from an AWS S3 bucket.
 
-Every line of every file is sent through the stream until it closes.
+Every line of every file is sent through the stream until it closes. This is very useful for processing lines of csv / event log files.
 
 As a bonus, any files in your S3 bucket that end with `.gz` or `.bz2` will be
 automatically decompressed using gzip or bzip2 algorithms respectively.
+
+Barf uses the AWS recommended way of authenticating by automatically reading the needed credentials from the enviroment variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. If these enviroment variables are not set the binary will panic.
+
+Logo by [Enemist Arts](https://www.instagram.com/enemistarts/).
 
 ## cli
 
 ### Install
 
-The binaries for mac, windows and linux are hosted on the [releases](https://github.com/smaxwellstewart/barf/releases)
-page of the github project.
+The latest binaries for mac, windows and linux are hosted on the [releases](https://github.com/smaxwellstewart/barf/releases)
+page of the github project. You will need to download them and put them somewhere on your machine. It is recommend you put them on you path.
 
-#### OSX
+#### Linux / OSX
 
-```sh
-curl https://github.com/smaxwellstewart/barf/releases/download/v0.1/barf_osx -o barf
-chmod +x barf
-# move to some directory on your `$PATH`, example:
-sudo mv barf /usr/local/bin
+First, download the correct binary for your machine.
+
 ```
+# move binary onto your path
+$ mv ./barf_linux /usr/local/bin/barf # use _osx for osx binary
 
-#### Linux
+# make binary executable
+chmod +x /usr/local/bin/barf
 
-```sh
-wget https://github.com/smaxwellstewart/barf/releases/download/v0.1/barf_linux
-mv barf_linux barf
-chmod +x barf
-# move to some directory on your `$PATH`, example:
-sudo mv barf /usr/local/bin/barf
-```
-
-#### Windows
-
-```bash
-# Binary available: https://github.com/smaxwellstewart/barf/releases/download/v0.1/barf.exe
-# Method not implemented yet.
+# test!
+barf
 ```
 
 ### Usage
@@ -88,7 +82,7 @@ func main() {
 	defer b.Close()
 
 	// read stream and print stdout
-  for line := range b.Barf() {
+  	for line := range b.Barf() {
 		// do something with the line of content
 	}
 }
